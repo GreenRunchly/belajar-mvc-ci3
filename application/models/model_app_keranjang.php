@@ -6,17 +6,32 @@ class model_app_keranjang extends CI_Model {
         $this->load->database();
     }
 
-    public function tambahBarang($kodebarang=false) {
+    public function tambahBarang($kodebarang=false, $stokDibeli=0) {
 
-        $barangTerpilih = null;
+        $hasil = null;
         
         if ($kodebarang !== false){
             // Ambil informasi barang
             $this->load->model('model_app_barang');
-            $barangTerpilih = $this->model_app_barang->getBarangSatu($kodebarang)[0];
+            $infoBarang = $this->model_app_barang->getBarangSatu($kodebarang)[0];
+
+			// Cek kuantitas apakah cukup dengan jumlah yang ingin dibeli
+			$stockBarang = $infoBarang['stock_quantity'];
+			if ($stockBarang > $stokDibeli){
+				$stockTerjual = $stockBarang-$stokDibeli;
+				
+				$this->db->where('stock_barang_kode', $kodebarang);
+				$hasil = $this->db->update('tbl_barang_stock', array(
+					'stock_quantity' => $stockTerjual
+				));
+				
+			}else{
+				$hasil = false;
+			}
+
         }
 
-        return $barangTerpilih;
+        return $hasil;
     }
 
     public function buangBarang() {
