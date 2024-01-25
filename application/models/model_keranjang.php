@@ -1,5 +1,5 @@
 <?php
-class model_app_keranjang extends CI_Model {
+class model_keranjang extends CI_Model {
 
     // Load DB
     public function __construct() {

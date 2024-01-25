@@ -10,7 +10,7 @@ class App extends CI_Controller {
 		$this->load->database();
 		$this->load->view('parts/header');
 		$this->load->view('parts/navbar');
-		$this->load->view('view_app_main');
+		$this->load->view('view_main');
 		
 	}
 
