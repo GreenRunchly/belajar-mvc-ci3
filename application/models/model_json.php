@@ -12,6 +12,14 @@ class model_json extends CI_Model {
 		$this->pesan = 'Ada yang tidak beres, cek lagi...';
     }
 
+	public function getMetodeRequest(){
+		return strtoupper( $this->input->server('REQUEST_METHOD') );
+	}
+
+	public function setHeaderResponse($kode = '500'){
+		$this->output->set_status_header($kode); 
+	}
+
 	public function setStatus($status = null) {
 		$this->status = $status;
 	}

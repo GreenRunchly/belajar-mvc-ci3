@@ -22,7 +22,7 @@ class model_barang extends CI_Model {
         $this->db->from('tbl_barang');
         $this->db->join('tbl_barang_stock', 'tbl_barang.barang_kode = tbl_barang_stock.stock_barang_kode', 'inner'); 
         
-		$this->db->like(array('barang_kode' => $kodebarang));
+		$this->db->where(array('barang_kode' => $kodebarang));
         
 		$query = $this->db->get();
   
