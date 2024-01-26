@@ -10,60 +10,61 @@ class Barang extends CI_Controller {
 		
 	}
 
-    // domain.local/barang/tambah/{idbarang}
-	public function tambah(){
+	public function test(){
 
-		$kodebarang = $this->input->post('kode_barang');
-		$kuantitas = $this->input->post('kuantitas');
-		
-		// Init DB
+		// Init DB dan Load JSON
 		$this->load->database();
-		// Load Model Barang dan JSON
-		$this->load->model('model_barang');
 		$this->load->model('model_json');
-		$data = $this->model_json->init();
+		$this->model_json->pick();
 
-		// Aksi
-		$hasil = $this->model_barang->ubahKuantitasBarang($kodebarang, $kuantitas);
-		if ($hasil !== null){
-			$data['status'] = true; $data['kode'] = 'OK';
-			$data['pesan'] = 'Berhasil menambah kuantitas barang!';
-			$data['data'] = $hasil;
-		}else{
-			$data['kode'] = 'NOT_FOUND';
-			$data['pesan'] = 'Tidak dapat menambah kuantitas barang!';
-		}
+		// Set response
+		$this->model_json->setStatus(true);
+		$this->model_json->setKode('OK');
+		$this->model_json->setPesan('Berhasil!');
 
-		// Load View API JSON
-		$this->load->view('view_api', array( 'data' => $data ));
+		// Kirim Respon
+		$this->model_json->put();
 
 	}
 
 	// domain.local/barang/lihat/{all}
-	public function lihat($pilihan='all'){
+	public function lihat($pilihan = false){
 		
-		// Init DB
+		// Init DB dan Load JSON
 		$this->load->database();
+		$this->load->model('model_json');
+		$this->model_json->pick();
 		// Load Model
-		$this->load->model('model_app_barang');
+		$this->load->model('model_barang');
 
 		switch ($pilihan) {
 			case 'all':
 				// Ambil data barang semua
-				$data['listing'] = $this->model_barang->getBarangSemua();
+				$hasil = $this->model_barang->lihat();
+				$this->model_json->setData($hasil);
+
+				// Set respon JSON
+				$this->model_json->setStatus(true);
+				$this->model_json->setKode('OK');
+				$this->model_json->setPesan('Berhasil!');
 				break;
 			
 			default:
-				// Ambil data barang satu saja
-				$data['listing'] = $this->model_barang->getBarangSatu($pilihan);
+				// Ambil data barang satu saja spesifik
+				$kodebarang = $this->input->get('kode_barang');
+				
+				$hasil = $this->model_barang->lihatSingle($kodebarang);
+				$this->model_json->setData($hasil);
+
+				// Set respon JSON
+				$this->model_json->setStatus(true);
+				$this->model_json->setKode('OK');
+				$this->model_json->setPesan('Berhasil!');
 				break;
 		}
 
-		// Tampilkan Halaman
-		$this->load->view('parts/header');
-		$this->load->view('parts/navbar');
-		$this->load->view('view_api', $data);
-
+		// Kirim Respon
+		$this->model_json->put();
 	}
 
 }
